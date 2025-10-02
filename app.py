@@ -2,6 +2,12 @@ from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse
 import requests
 from bs4 import BeautifulSoup
+from fastapi.responses import FileResponse
+
+@app.get("/")
+def home():
+    return FileResponse("index.html")
+
 
 app = FastAPI(title="Trendyol Yorum Çekme Demo")
 

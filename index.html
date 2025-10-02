@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Trendyol Yorum Çekme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input {
+            width: 300px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: #ff6f61;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trendyol Yorum Çekme</h1>
+        <input type="text" id="shopLink" placeholder="Trendyol mağaza linkini girin">
+        <br>
+        <button onclick="getComments()">Yorumları Göster</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function getComments() {
+            const shopLink = document.getElementById('shopLink').value;
+            if (!shopLink) return alert("Lütfen mağaza linki girin.");
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "Yükleniyor...";
+
+            try {
+                const res = await fetch(`/yorumlar?shop=${encodeURIComponent(shopLink)}`);
+                const data = await res.json();
+
+                if (data.yorumlar) {
+                    resultDiv.innerHTML = "<h3>Yorumlar:</h3><ul>" +
+                        data.yorumlar.map(y => `<li>${y}</li>`).join("") +
+                        "</ul>";
+                } else {
+                    resultDiv.innerHTML = "Yorum bulunamadı.";
+                }
+            } catch (e) {
+                resultDiv.innerHTML = "Hata oluştu: " + e;
+            }
+        }
+    </script>
+</body>
+</html>

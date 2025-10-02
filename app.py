@@ -148,3 +148,9 @@ def scrape_endpoint(request: ScrapeRequest):
         return {"reviews_count": len(reviews), "csv_path": filepath}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/")
+def home():
+    return {"message": "FastAPI app çalışıyor!"}
+

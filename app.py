@@ -1,15 +1,14 @@
 from fastapi import FastAPI, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 import requests
 from bs4 import BeautifulSoup
-from fastapi.responses import FileResponse
 
+app = FastAPI(title="Trendyol Yorum Çekme Demo")
+
+# Ana sayfa
 @app.get("/")
 def home():
     return FileResponse("index.html")
-
-
-app = FastAPI(title="Trendyol Yorum Çekme Demo")
 
 # Basit yorum cache
 yorum_cache = {}
@@ -26,7 +25,6 @@ def get_trendyol_comments(shop_url: str):
         return [f"Hata: {e}"]
 
     soup = BeautifulSoup(resp.text, "html.parser")
-    # Trendyol yorumları için örnek selector (gerçek siteye göre değişebilir)
     yorumlar = [c.get_text(strip=True) for c in soup.select(".review-text")]
 
     if not yorumlar:
@@ -43,8 +41,6 @@ def yorumlar(shop: str = Query(..., description="Trendyol mağaza URL")):
 @app.get("/generate")
 def generate_embed(shop: str = Query(..., description="Trendyol mağaza URL")):
     comments = get_trendyol_comments(shop)
-    # Embed kodu (iframe)
-    # iframe src, FastAPI embed endpoint'ini çağıracak
     embed_code = f'<iframe src="https://<RENDER_APP_URL>/embed?shop={shop}" width="400" height="600"></iframe>'
     return {"embed": embed_code, "yorum_sayisi": len(comments)}
 
